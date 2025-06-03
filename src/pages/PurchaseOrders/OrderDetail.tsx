@@ -10,6 +10,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase.ts";
 import Badge from "../../components/ui/badge/Badge";
+import './OrderDetail.css'; // create this CSS file in the same folder
+
 
 interface Product {
   category: string;
@@ -135,7 +137,7 @@ export default function OrderDetail() {
                 <img
                   src={product.productImages[0]}
                   alt={product.description}
-                  className="w-28 h-28 object-cover rounded border"
+  className="w-28 h-28 object-cover rounded border hover-zoom"
                 />
                 <div className="text-sm text-gray-800 flex-1 space-y-1">
                   <div className="font-semibold">{product.productBrandName} - {product.subcategory}</div>
@@ -149,7 +151,7 @@ export default function OrderDetail() {
               {product.productImages.length > 1 && (
                 <div className="flex gap-2 mt-3 flex-wrap">
                   {product.productImages.slice(1).map((img, i) => (
-                    <img key={i} src={img} className="w-16 h-16 object-cover rounded border" />
+  <img key={i} src={img} className="w-16 h-16 object-cover rounded border hover-zoom" />
                   ))}
                 </div>
               )}
