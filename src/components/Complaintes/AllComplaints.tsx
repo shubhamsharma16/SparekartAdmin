@@ -8,7 +8,7 @@ import {
 import Badge from "../ui/badge/Badge";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, orderBy, limit, startAfter, getCountFromServer } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db } from "../../firebase.ts";
 
 interface ComplaintRequest {
   complaintId: string;
