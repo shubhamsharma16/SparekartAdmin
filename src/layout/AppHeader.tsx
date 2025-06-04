@@ -118,7 +118,7 @@ const AppHeader: React.FC = () => {
 
           <div className="hidden lg:block">
             <form>
-              <div className="relative">
+              {/* <div className="relative">
                 <span className="absolute -translate-y-1/2 pointer-events-none left-4 top-1/2">
                   <svg
                     className="fill-gray-500 dark:fill-gray-400"
@@ -147,7 +147,7 @@ const AppHeader: React.FC = () => {
                   <span> ⌘ </span>
                   <span> K </span>
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>
@@ -158,9 +158,9 @@ const AppHeader: React.FC = () => {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
-            <ThemeToggleButton />
+            {/* <ThemeToggleButton /> */}
             {/* <!-- Dark Mode Toggler --> */}
-            <NotificationDropdown />
+            {/* <NotificationDropdown /> */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}

@@ -20,8 +20,9 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
-import Orders from "./pages/PurchaseOrders/orders";
+import Orders from "./pages/PurchaseOrders/Orders";
 import OrderDetail from "./pages/PurchaseOrders/OrderDetail";
+import Products from "./pages/Products/Products";
 
 export default function App() {
   return (
@@ -49,6 +50,9 @@ export default function App() {
             {/* purchase orders  */}
             <Route path="/purchase-orders" element={<Orders />} />
             <Route path="/order-detail/:orderId" element={<OrderDetail />} />
+  
+           {/* products */}
+            <Route path="/products" element={<Products />} />
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
