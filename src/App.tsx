@@ -23,6 +23,7 @@ import Home from "./pages/Dashboard/Home";
 import Orders from "./pages/PurchaseOrders/Orders";
 import OrderDetail from "./pages/PurchaseOrders/OrderDetail";
 import Products from "./pages/Products/Products";
+import UserList from "./pages/Users/Users";
 
 export default function App() {
   return (
@@ -53,6 +54,9 @@ export default function App() {
   
            {/* products */}
             <Route path="/products" element={<Products />} />
+            {/* Users */}
+                        <Route path="/users" element={<UserList />} />
+
 
             {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />

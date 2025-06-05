@@ -168,9 +168,9 @@ export default function AllComplants() {
         >
           Clear
         </button>
-        <span className="ml-4 text-gray-500 text-sm">
+        {/* <span className="ml-4 text-gray-500 text-sm">
           Total: {totalCount}
-        </span>
+        </span> */}
       </div>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
