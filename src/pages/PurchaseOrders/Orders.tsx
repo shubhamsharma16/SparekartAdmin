@@ -25,6 +25,8 @@ interface Order {
   customerName: string;
   customerMobileNo: string;
   isDelivered: boolean;
+    orderBy: string;
+  OrderBy?: string; // <-- add this
 }
 
 const PAGE_SIZE = 10;
@@ -48,6 +50,16 @@ export default function Orders() {
     fetchCount();
   }, []);
 
+  const fetchUsersMapByDocId = async () => {
+  const userColRef = collection(db, "Users");
+  const snapshot = await getDocs(userColRef);
+  const userMap: Record<string, string> = {};
+  snapshot.forEach(doc => {
+    const userData = doc.data();
+    userMap[doc.id] = userData.name; // 🔥 doc.id is used
+  });
+  return userMap;
+};
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -63,6 +75,8 @@ export default function Orders() {
 
       const q = query(colRef, ...constraints);
       const querySnapshot = await getDocs(q);
+  // Get user map first
+  const userMap = await fetchUsersMapByDocId();
 
       let data: Order[] = querySnapshot.docs.map((doc) => {
         const d = doc.data();
@@ -72,8 +86,10 @@ export default function Orders() {
           customerName: d.shippingAddress?.fullName || "",
           customerMobileNo: d.shippingAddress?.mobileNumber || "",
           isDelivered: d.orderDeliveredAt != null,
+          orderBy:userMap[d.orderBy] || "Unknown",
         };
       });
+// console.log(data,">>>>>>>>");
 
       if (filter) {
         const filterLower = filter.toLowerCase();
@@ -219,6 +235,8 @@ export default function Orders() {
               <TableRow>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     Order ID</TableCell>
+                    <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                    Order By</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     Placed At</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
@@ -235,6 +253,8 @@ export default function Orders() {
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     <Link to={`/order-detail/${item.orderId}`} className="text-blue-600 hover:underline">{item.orderId}</Link>
                     </TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {item.orderBy}</TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {item.orderPlacedAt?.toDate
                       ? item.orderPlacedAt.toDate().toLocaleString()

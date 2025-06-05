@@ -28,6 +28,8 @@ interface Product {
   price: number;
   productImages: string[];
   createdAt: any;
+    ownerId: string;
+  ownerName?: string; // <-- add this
 }
 
 const PAGE_SIZE = 10;
@@ -50,50 +52,70 @@ export default function Products() {
     fetchCount();
   }, []);
 
+const fetchUsersMapByDocId = async () => {
+  const userColRef = collection(db, "Users");
+  const snapshot = await getDocs(userColRef);
+  const userMap: Record<string, string> = {};
+  snapshot.forEach(doc => {
+    const userData = doc.data();
+    userMap[doc.id] = userData.name; // 🔥 doc.id is used
+  });
+  return userMap;
+};
+
+
   useEffect(() => {
-    const fetchData = async () => {
-      const colRef = collection(db, "ECommerce", "Products", "Products");
-      const constraints: any[] = [orderBy("createdAt", "desc"), limit(PAGE_SIZE)];
+   const fetchData = async () => {
+  const colRef = collection(db, "ECommerce", "Products", "Products");
+  const constraints: any[] = [orderBy("createdAt", "desc"), limit(PAGE_SIZE)];
 
-      if (page > 1 && pageCursors[page - 1]) {
-        constraints.push(startAfter(pageCursors[page - 1]));
-      }
+  if (page > 1 && pageCursors[page - 1]) {
+    constraints.push(startAfter(pageCursors[page - 1]));
+  }
 
-      const q = query(colRef, ...constraints);
-      const querySnapshot = await getDocs(q);
+  const q = query(colRef, ...constraints);
+  const querySnapshot = await getDocs(q);
 
-      let data: Product[] = querySnapshot.docs.map((doc) => {
-        const d = doc.data();
-        return {
-          productId: d.productId || doc.id,
-          productBrandName: d.productBrandName || "",
-          description: d.description || "",
-          model: d.model || "",
-         subcategory: d.subcategory || "",
-          modelYear: d.modelYear || 0,
-          vehicleMaker:d.vehicleMaker || 0,
-          price: d.price || 0,
-          productImages: d.productImages || [],
-          createdAt: d.createdAt,
-        };
-      });
+  // Get user map first
+  const userMap = await fetchUsersMapByDocId();
+
+  let data: Product[] = querySnapshot.docs.map((doc) => {
+    const d = doc.data();
+    return {
+      productId: d.productId || doc.id,
+      productBrandName: d.productBrandName || "",
+      description: d.description || "",
+      model: d.model || "",
+      subcategory: d.subcategory || "",
+      modelYear: d.modelYear || 0,
+      vehicleMaker: d.vehicleMaker || "",
+      price: d.price || 0,
+      productImages: d.productImages || [],
+      createdAt: d.createdAt,
+      ownerId: d.ownerId || "",
+      ownerName: userMap[d.ownerId] || "Unknown",
+    };
+  });
 
   if (filter) {
-        const filterLower = filter.toLowerCase();
-        data = data.filter(
-          (item) =>
-            item.productBrandName.toLowerCase().includes(filterLower) ||
-            item.model.includes(filter)
-        );
-      }
-      setProducts(data);
+    const filterLower = filter.toLowerCase();
+    data = data.filter(
+      (item) =>
+        item.productBrandName.toLowerCase().includes(filterLower) ||
+        item.model.toLowerCase().includes(filterLower) || 
+                item.ownerName?.toLowerCase().includes(filterLower)
 
-      if (querySnapshot.docs.length > 0) {
-        const newCursors = [...pageCursors];
-        newCursors[page] = querySnapshot.docs[querySnapshot.docs.length - 1];
-        setPageCursors(newCursors);
-      }
-    };
+    );
+  }
+
+  setProducts(data);
+
+  if (querySnapshot.docs.length > 0) {
+    const newCursors = [...pageCursors];
+    newCursors[page] = querySnapshot.docs[querySnapshot.docs.length - 1];
+    setPageCursors(newCursors);
+  }
+};
 
     fetchData();
   }, [page, totalCount,filter]);
@@ -175,6 +197,8 @@ export default function Products() {
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+                      Owner</TableCell>
+                <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     Image</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     Brand</TableCell>
@@ -195,6 +219,8 @@ export default function Products() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {products.map((p) => (
                 <TableRow key={p.productId}>
+                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                    {p.ownerName}</TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {p.productImages.length > 0 ? (
                       <img
