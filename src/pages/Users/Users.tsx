@@ -180,7 +180,7 @@ export default function UserList() {
           <Table>
             <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
-                <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Profile</TableCell>
+                {/* <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Profile</TableCell> */}
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Name</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Email</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Mobile</TableCell>
@@ -195,13 +195,13 @@ export default function UserList() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {users.map((u) => (
                 <TableRow key={u.id}>
-                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                  {/* <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {u.profilePicUrl ? (
                       <img src={u.profilePicUrl} alt="profile" className="w-10 h-10 rounded-full border" />
                     ) : (
                       <div className="w-10 h-10 bg-gray-100 flex items-center justify-center text-xs text-gray-400">No Image</div>
                     )}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {u.name}</TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">

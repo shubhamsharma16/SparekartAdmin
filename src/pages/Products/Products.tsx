@@ -37,6 +37,7 @@ export default function Products() {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<any[]>([null]);
+  const [filter, setFilter] = useState("");
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
@@ -61,7 +62,7 @@ export default function Products() {
       const q = query(colRef, ...constraints);
       const querySnapshot = await getDocs(q);
 
-      const data: Product[] = querySnapshot.docs.map((doc) => {
+      let data: Product[] = querySnapshot.docs.map((doc) => {
         const d = doc.data();
         return {
           productId: d.productId || doc.id,
@@ -77,6 +78,14 @@ export default function Products() {
         };
       });
 
+  if (filter) {
+        const filterLower = filter.toLowerCase();
+        data = data.filter(
+          (item) =>
+            item.productBrandName.toLowerCase().includes(filterLower) ||
+            item.model.includes(filter)
+        );
+      }
       setProducts(data);
 
       if (querySnapshot.docs.length > 0) {
@@ -87,7 +96,7 @@ export default function Products() {
     };
 
     fetchData();
-  }, [page, totalCount]);
+  }, [page, totalCount,filter]);
 
   const renderPagination = () => {
     if (totalPages <= 1) return null;
@@ -137,11 +146,33 @@ export default function Products() {
 
   return (
     <div>
+      <div className="mb-4 flex gap-2">
+        <input
+          type="text"
+          placeholder="Filter by Brand or Model"
+          value={filter}
+          onChange={(e) => {
+            setPage(1);
+            setFilter(e.target.value);
+          }}
+          className="border px-2 py-1 rounded"
+        />
+        <button
+          onClick={() => {
+            setFilter("");
+            setPage(1);
+          }}
+          className="px-2 py-1 bg-gray-200 rounded"
+        >
+          Clear
+        </button>
+        {/* <span className="ml-4 text-gray-500 text-sm">Total: {totalCount}</span> */}
+      </div>
       <h2 className="text-xl font-bold mb-4">Products</h2>
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
-            <TableHeader>
+            <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
               <TableRow>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     Image</TableCell>
@@ -161,10 +192,10 @@ export default function Products() {
                     vehicleMaker</TableCell>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {products.map((p) => (
                 <TableRow key={p.productId}>
-                  <TableCell>
+                  <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {p.productImages.length > 0 ? (
                       <img
                         src={p.productImages[0]}
