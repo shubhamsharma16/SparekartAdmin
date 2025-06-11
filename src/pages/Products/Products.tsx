@@ -16,12 +16,17 @@ import {
   getCountFromServer,
 } from "firebase/firestore";
 import { db } from "../../firebase.ts";
+import { deleteDoc } from "firebase/firestore";
+import { PencilIcon, TrashBinIcon } from "../../icons/index.ts";
+import Alert from "../../components/ui/alert/Alert.tsx";
+import { useNavigate } from "react-router";
 
 interface Product {
   productId: string;
   productBrandName: string;
   description: string;
   model: string;
+  category:string;
   subcategory:string;
   modelYear: number;
   vehicleMaker:string;
@@ -35,6 +40,8 @@ interface Product {
 const PAGE_SIZE = 10;
 
 export default function Products() {
+    const navigate = useNavigate();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
@@ -42,8 +49,20 @@ export default function Products() {
   const [filter, setFilter] = useState("");
 const [selectedImages, setSelectedImages] = useState<string[]>([]);
 const [isModalOpen, setIsModalOpen] = useState(false);
+const [alert, setAlert] = useState<{
+  variant: "success" | "error" | "warning" | "info";
+  title: string;
+  message: string;
+} | null>(null);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
+  useEffect(() => {
+  if (alert) {
+    const timer = setTimeout(() => setAlert(null), 4000);
+    return () => clearTimeout(timer);
+  }
+}, [alert]);
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -88,6 +107,7 @@ const fetchUsersMapByDocId = async () => {
       productBrandName: d.productBrandName || "",
       description: d.description || "",
       model: d.model || "",
+      category:d.category || "",
       subcategory: d.subcategory || "",
       modelYear: d.modelYear || 0,
       vehicleMaker: d.vehicleMaker || "",
@@ -147,6 +167,8 @@ const fetchUsersMapByDocId = async () => {
       );
     }
 
+
+
     return (
       <div className="flex justify-center py-4">
         <button
@@ -168,8 +190,56 @@ const fetchUsersMapByDocId = async () => {
     );
   };
 
+  const handleEdit = (product: Product) => {
+  console.log("Edit product:", product);
+    navigate(`/update-products`, { state: { product } });
+};
+
+const handleDelete = async (productId: string) => {
+  const confirm = window.confirm("Are you sure you want to delete this product?");
+  if (!confirm) return;
+
+  try {
+    const productRef = collection(db, "ECommerce", "Products", "Products");
+    const snapshot = await getDocs(query(productRef));
+    const docToDelete = snapshot.docs.find((doc) => doc.data().productId === productId);
+
+    if (docToDelete) {
+      await deleteDoc(docToDelete.ref);   
+      setProducts((prev) => prev.filter((p) => p.productId !== productId));
+      setAlert({
+        variant: "success",
+        title: "Deleted!",
+        message: "The product has been successfully deleted.",
+      });
+    } else {
+ setAlert({
+        variant: "error",
+        title: "Not Found",
+        message: "The product you are trying to delete was not found.",
+      });
+        }
+  } catch (error) {
+    console.error("Error deleting product:", error);
+ setAlert({
+      variant: "error",
+      title: "Error",
+      message: "An error occurred while deleting the product.",
+    })  }
+};
+
+
   return (
     <div>
+{alert && (
+  <Alert
+    variant={alert.variant}
+    title={alert.title}
+    message={alert.message}
+  />
+)}
+
+
       {isModalOpen && (
   <div
     className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50"
@@ -245,7 +315,12 @@ const fetchUsersMapByDocId = async () => {
                     Price</TableCell>
                       <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
                     vehicleMaker</TableCell>
+                              <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+  Action
+</TableCell>
               </TableRow>
+    
+
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {products.map((p) => (
@@ -285,6 +360,25 @@ const fetchUsersMapByDocId = async () => {
 
                       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {p.vehicleMaker}</TableCell>
+                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+  <div className="flex items-center gap-3">
+    <button
+      onClick={() => handleEdit(p)}
+      className="text-blue-600 hover:text-blue-800"
+      title="Edit"
+    >
+      <PencilIcon fontSize={25}/>
+    </button>
+    <button
+      onClick={() => handleDelete(p.productId)}
+      className="text-red-600 hover:text-red-800"
+      title="Delete"
+    >
+<TrashBinIcon fontSize={20}/>
+    </button>
+  </div>
+</TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

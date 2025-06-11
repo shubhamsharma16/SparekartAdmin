@@ -24,6 +24,7 @@ import Orders from "./pages/PurchaseOrders/Orders";
 import OrderDetail from "./pages/PurchaseOrders/OrderDetail";
 import Products from "./pages/Products/Products";
 import UserList from "./pages/Users/Users";
+import UpdateProducts from "./pages/Products/UpdateProducts";
 
 export default function App() {
   return (
@@ -54,6 +55,8 @@ export default function App() {
   
            {/* products */}
             <Route path="/products" element={<Products />} />
+                        <Route path="/update-products" element={<UpdateProducts />} />
+
             {/* Users */}
                         <Route path="/users" element={<UserList />} />
 
