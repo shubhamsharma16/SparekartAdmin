@@ -40,6 +40,8 @@ export default function Products() {
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<any[]>([null]);
   const [filter, setFilter] = useState("");
+const [selectedImages, setSelectedImages] = useState<string[]>([]);
+const [isModalOpen, setIsModalOpen] = useState(false);
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
@@ -168,6 +170,35 @@ const fetchUsersMapByDocId = async () => {
 
   return (
     <div>
+      {isModalOpen && (
+  <div
+    className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50"
+    onClick={() => setIsModalOpen(false)} // close on clicking outside modal
+  >
+    <div
+      className="bg-white p-6 rounded shadow-lg max-w-3xl max-h-[80vh] overflow-auto"
+      onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside modal
+    >
+      <button
+        onClick={() => setIsModalOpen(false)}
+        className="mb-4 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+      >
+        Close
+      </button>
+      <div className="flex flex-wrap gap-4">
+        {selectedImages.map((imgUrl, idx) => (
+          <img
+            key={idx}
+            src={imgUrl}
+            alt={`Product Image ${idx + 1}`}
+            className="w-48 h-48 object-cover rounded border"
+          />
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
       <div className="mb-4 flex gap-2">
         <input
           type="text"
@@ -227,6 +258,10 @@ const fetchUsersMapByDocId = async () => {
                         src={p.productImages[0]}
                         alt="product"
                         className="w-16 h-16 object-cover rounded border"
+                          onClick={() => {
+        setSelectedImages(p.productImages);
+        setIsModalOpen(true);
+      }}
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-100 flex items-center justify-center text-xs text-gray-400">
