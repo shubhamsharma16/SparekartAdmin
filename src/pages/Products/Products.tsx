@@ -37,7 +37,7 @@ interface Product {
   ownerName?: string; // <-- add this
 }
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 15;
 
 export default function Products() {
     const navigate = useNavigate();
@@ -242,7 +242,7 @@ const handleDelete = async (productId: string) => {
 
       {isModalOpen && (
   <div
-    className="fixed inset-0  bg-opacity-50 flex items-center justify-center z-50"
+    className="fixed inset-0 bg-black/10 flex items-center justify-center"
     onClick={() => setIsModalOpen(false)} // close on clicking outside modal
   >
     <div

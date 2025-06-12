@@ -56,6 +56,11 @@ const navItems: NavItem[] = [
     icon: <BoxCubeIcon />,
     subItems: [{ name: "All Orders", path: "/purchase-orders", pro: false }],
   },
+   {
+    name: "Shopkeeper",
+    icon: <BoxCubeIcon />,
+    subItems: [{ name: "All Requests", path: "/shopkeeper-request", pro: false }],
+  },
   // {
   //   name: "Tables",
   //   icon: <TableIcon />,

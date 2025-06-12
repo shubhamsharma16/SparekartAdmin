@@ -25,6 +25,7 @@ import OrderDetail from "./pages/PurchaseOrders/OrderDetail";
 import Products from "./pages/Products/Products";
 import UserList from "./pages/Users/Users";
 import UpdateProducts from "./pages/Products/UpdateProducts";
+import ShopkeeperRequests from "./pages/Shopkeeper/ShopkeeperRequest";
 
 export default function App() {
   return (
@@ -59,6 +60,8 @@ export default function App() {
 
             {/* Users */}
                         <Route path="/users" element={<UserList />} />
+    {/* Shopkeeper */}
+                        <Route path="/shopkeeper-request" element={<ShopkeeperRequests />} />
 
 
             {/* Ui Elements */}
