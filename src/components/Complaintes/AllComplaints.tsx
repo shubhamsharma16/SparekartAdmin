@@ -320,7 +320,7 @@ return (
 
     {/* Dialog for Track Records */}
     <Dialog open={openDialog} onClose={() => setOpenDialog(false)} className="fixed z-50 inset-0 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4">
+      <div className="flex items-center justify-center min-h-screen px-4 mt-10">
         <div className="fixed inset-0 bg-black opacity-30" />
         <div className="relative bg-white rounded-lg max-w-lg w-full mx-auto p-6 z-10">
           <Dialog.Title className="text-lg font-bold mb-2">Track Records</Dialog.Title>
