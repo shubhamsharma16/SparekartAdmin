@@ -26,10 +26,11 @@ import Products from "./pages/Products/Products";
 import UserList from "./pages/Users/Users";
 import UpdateProducts from "./pages/Products/UpdateProducts";
 import ShopkeeperRequests from "./pages/Shopkeeper/ShopkeeperRequest";
+import { AuthProvider } from "./context/AuthContext";
 
 export default function App() {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <ScrollToTop />
         <Routes>
@@ -85,6 +86,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 }
