@@ -205,6 +205,8 @@ export default function Orders() {
 
   return (
     <div>
+                  <h2 className="text-xl font-bold mb-4">Purchase Orders</h2>
+
       <div className="mb-4 flex gap-2">
         <input
           type="text"

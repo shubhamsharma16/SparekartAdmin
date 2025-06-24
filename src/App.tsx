@@ -28,6 +28,7 @@ import UpdateProducts from "./pages/Products/UpdateProducts";
 import ShopkeeperRequests from "./pages/Shopkeeper/ShopkeeperRequest";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
+import UpdateUser from "./pages/Users/UpdateUser";
 
 export default function App() {
   return (
@@ -64,6 +65,8 @@ export default function App() {
 
             {/* Users */}
                         <Route path="/users" element={<UserList />} />
+                                                <Route path="/update-user" element={<UpdateUser />} />
+
     {/* Shopkeeper */}
                         <Route path="/shopkeeper-request" element={<ShopkeeperRequests />} />
 

@@ -10,7 +10,10 @@ const LayoutContent: React.FC = () => {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const { logout, user, loading } = useAuth();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="flex items-center justify-center h-screen">
+  <div className="h-16 w-16 animate-spin rounded-full border-4 border-gray-300 border-t-transparent" />
+</div>
+;
   if (!user) return <Navigate to="/signin" replace />;
 
   return (

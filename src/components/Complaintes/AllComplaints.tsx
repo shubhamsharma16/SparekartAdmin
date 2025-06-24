@@ -233,6 +233,8 @@ const renderPagination = () => {
 return (
   <div>
     {/* Filter input */}
+          <h2 className="text-xl font-bold mb-4">Complaints</h2>
+
     <div className="mb-4 flex gap-2">
       <input
         type="text"

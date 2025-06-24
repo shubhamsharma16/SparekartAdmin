@@ -7,6 +7,8 @@ import {
   limit,
   startAfter,
   getCountFromServer,
+  doc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "../../firebase.ts";
 
@@ -18,6 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui/table/index.tsx";
+import { PencilIcon, TrashBinIcon } from "../../icons/index.ts";
+import { useNavigate } from "react-router";
 interface User {
   id: string;
   app1UserType: string;
@@ -39,6 +43,7 @@ interface User {
 const PAGE_SIZE = 10;
 
 export default function UserList() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -106,6 +111,28 @@ export default function UserList() {
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
+
+
+
+  const handleEdit = (user:User) => {
+  // Open a modal or navigate to edit screen with `user` data
+  // alert(`Edit user: ${user.name}`);
+      navigate(`/update-user`, { state: { user } });
+
+};
+
+const handleDelete = async (userId:string) => {
+  const confirm = window.confirm("Are you sure you want to delete this user?");
+  if (!confirm) return;
+
+  try {
+    await deleteDoc(doc(db, "Users", userId));
+    setUsers((prev) => prev.filter((user) => user.id !== userId));
+  } catch (err) {
+    console.error("Error deleting user:", err);
+  }
+};
+
   const renderPagination = () => {
     const buttons = [];
     const max = 5;
@@ -152,7 +179,8 @@ export default function UserList() {
 
   return (
     <div>
-      <h2 className="text-xl font-bold mb-4">Users</h2>
+                  <h2 className="text-xl font-bold mb-4">Users</h2>
+
         <div className="mb-4 flex gap-2">
         <input
           type="text"
@@ -175,6 +203,8 @@ export default function UserList() {
         </button>
         {/* <span className="ml-4 text-gray-500 text-sm">Total: {totalCount}</span> */}
       </div>
+            {/* <h2 className="text-xl font-bold mb-4">Users</h2> */}
+
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
@@ -190,6 +220,10 @@ export default function UserList() {
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Garage Name</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Garage Pic</TableCell>
                 <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Address</TableCell>
+              <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">
+  Action
+</TableCell>
+
               </TableRow>
             </TableHeader>
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
@@ -225,6 +259,25 @@ export default function UserList() {
                   </TableCell>
                   <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                     {u.location.address}</TableCell>
+                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+   <div className="flex items-center gap-3">
+    <button
+      onClick={() => handleEdit(u)}
+      className="text-blue-600 hover:text-blue-800"
+      title="Edit"
+    >
+      <PencilIcon fontSize={25}/>
+    </button>
+    <button
+      onClick={() => handleDelete(u.id)}
+      className="text-red-600 hover:text-red-800"
+      title="Delete"
+    >
+<TrashBinIcon fontSize={20}/>
+    </button>
+  </div>
+</TableCell>
+
                 </TableRow>
               ))}
             </TableBody>

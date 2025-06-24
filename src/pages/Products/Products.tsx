@@ -268,6 +268,7 @@ const handleDelete = async (productId: string) => {
     </div>
   </div>
 )}
+      <h2 className="text-xl font-bold mb-4">Products</h2>
 
       <div className="mb-4 flex gap-2">
         <input
@@ -291,7 +292,7 @@ const handleDelete = async (productId: string) => {
         </button>
         {/* <span className="ml-4 text-gray-500 text-sm">Total: {totalCount}</span> */}
       </div>
-      <h2 className="text-xl font-bold mb-4">Products</h2>
+      {/* <h2 className="text-xl font-bold mb-4">Products</h2> */}
       <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
         <div className="max-w-full overflow-x-auto">
           <Table>
