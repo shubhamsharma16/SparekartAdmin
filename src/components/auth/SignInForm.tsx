@@ -99,6 +99,16 @@ export default function SignInForm() {
                 </Button>
               </div>
               {error && <div className="text-red-500 text-sm">{error}</div>}
+              <div className="text-right">
+  <button
+    type="button"
+    onClick={() => navigate("/forgot-password")}
+    className="text-sm text-primary-600 hover:underline"
+  >
+    Forgot Password?
+  </button>
+</div>
+
             </div>
           </form>
         </div>

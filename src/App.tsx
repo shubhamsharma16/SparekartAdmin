@@ -27,6 +27,7 @@ import UserList from "./pages/Users/Users";
 import UpdateProducts from "./pages/Products/UpdateProducts";
 import ShopkeeperRequests from "./pages/Shopkeeper/ShopkeeperRequest";
 import { AuthProvider } from "./context/AuthContext";
+import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 
 export default function App() {
   return (
@@ -35,10 +36,12 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
+            <Route index path="/forgot-password" element={<ForgotPassword />} />
           <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
 
             {/* Others Page */}
+                        <Route index path="/" element={<Home />} />
+
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
