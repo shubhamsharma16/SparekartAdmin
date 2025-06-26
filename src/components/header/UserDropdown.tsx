@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { useNavigate } from "react-router-dom"; // useNavigate for redirect
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase"; // make sure this points to your firebase config
+import { useNavigate } from "react-router-dom";
+import { signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { auth } from "../../firebase";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
   const navigate = useNavigate();
 
   function toggleDropdown() {
@@ -26,6 +31,53 @@ export default function UserDropdown() {
     }
   };
 
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError("");
+    setPasswordSuccess("");
+    if (!auth.currentUser || !auth.currentUser.email) {
+      setPasswordError("No user logged in.");
+      return;
+    }
+    if (!currentPassword) {
+      setPasswordError("Please enter your current password.");
+      return;
+    }
+    if (!newPassword) {
+      setPasswordError("Please enter a new password.");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters long.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New password and confirm password do not match.");
+      return;
+    }
+    try {
+      // Re-authenticate user
+      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+      await reauthenticateWithCredential(auth.currentUser, credential);
+      await updatePassword(auth.currentUser, newPassword);
+      setPasswordSuccess("Password updated successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setShowPasswordModal(false);
+    } catch (err: any) {
+      if (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
+        setPasswordError("The current password is incorrect or your session has expired. Please sign in again and try changing your password.");
+      } else if (err.code === "auth/weak-password") {
+        setPasswordError("The new password is too weak.");
+      } else if (err.code === "auth/too-many-requests") {
+        setPasswordError("Too many attempts. Please try again later.");
+      } else {
+        setPasswordError(err.message || "An error occurred. Please try again.");
+      }
+    }
+  };
+
   return (
     <div className="relative">
       <button
@@ -35,7 +87,6 @@ export default function UserDropdown() {
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
           <img src="/images/user/owner.jpg" alt="User" />
         </span>
-
         <span className="block mr-1 font-medium text-theme-sm">Admin</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
@@ -56,7 +107,6 @@ export default function UserDropdown() {
           />
         </svg>
       </button>
-
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
@@ -67,12 +117,16 @@ export default function UserDropdown() {
             Admin
           </span>
         </div>
-
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
-          {/* Add profile options here if needed */}
+          <li>
+            <button
+              onClick={() => setShowPasswordModal(true)}
+              className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-white/5"
+            >
+              Change Password
+            </button>
+          </li>
         </ul>
-
-        {/* 🔒 Sign out button */}
         <button
           onClick={handleSignOut}
           className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300 w-full text-left"
@@ -95,6 +149,56 @@ export default function UserDropdown() {
           Sign out
         </button>
       </Dropdown>
+      {showPasswordModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+          <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
+            <h2 className="text-lg font-bold mb-4">Change Password</h2>
+            <form onSubmit={handlePasswordUpdate}>
+              <input
+                type="password"
+                placeholder="Current Password"
+                value={currentPassword}
+                onChange={e => setCurrentPassword(e.target.value)}
+                className="w-full border px-3 py-2 rounded mb-2"
+                required
+              />
+              <input
+                type="password"
+                placeholder="New Password"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                className="w-full border px-3 py-2 rounded mb-2"
+                required
+              />
+              <input
+                type="password"
+                placeholder="Confirm New Password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                className="w-full border px-3 py-2 rounded mb-2"
+                required
+              />
+              {passwordError && <div className="text-red-500 mb-2">{passwordError}</div>}
+              {passwordSuccess && <div className="text-green-500 mb-2">{passwordSuccess}</div>}
+              <div className="flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordModal(false)}
+                  className="px-3 py-1 bg-gray-300 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-3 py-1 bg-blue-600 text-white rounded"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
