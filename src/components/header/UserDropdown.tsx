@@ -150,7 +150,7 @@ export default function UserDropdown() {
         </button>
       </Dropdown>
       {showPasswordModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
+<div className="fixed inset-0 flex items-center justify-center  bg-opacity-50 backdrop-blur-sm z-50">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-sm">
             <h2 className="text-lg font-bold mb-4">Change Password</h2>
             <form onSubmit={handlePasswordUpdate}>
