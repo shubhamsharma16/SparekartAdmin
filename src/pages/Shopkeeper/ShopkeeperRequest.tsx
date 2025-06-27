@@ -18,8 +18,8 @@ import {
 import { db } from "../../firebase.ts";
 import Alert from "../../components/ui/alert/Alert.tsx";
 import Badge from "../../components/ui/badge/Badge.tsx";
-import { deleteDoc, doc } from "firebase/firestore";
-import { TrashBinIcon } from "../../icons/index.ts";
+// import { deleteDoc, doc } from "firebase/firestore";
+// import { TrashBinIcon } from "../../icons/index.ts";
 
 const PAGE_SIZE = 15;
 
@@ -185,32 +185,32 @@ export default function ShopkeeperRequests() {
   };
 
 
- const handleDelete = async (complaintId:string) => {
-  if (!window.confirm("Are you sure you want to delete this request?")) return;
-  try {
-    console.log("Attempting to delete document with complaintId:", complaintId);
-    const docRef = doc(db, "ShopkeeperRequests", complaintId);
-    console.log("Firestore docRef:", docRef);
+//  const handleDelete = async (complaintId:string) => {
+//   if (!window.confirm("Are you sure you want to delete this request?")) return;
+//   try {
+//     console.log("Attempting to delete document with complaintId:", complaintId);
+//     const docRef = doc(db, "ShopkeeperRequests", complaintId);
+//     console.log("Firestore docRef:", docRef);
 
-    await deleteDoc(docRef);
-    console.log("Document deleted successfully:", complaintId);
+//     await deleteDoc(docRef);
+//     console.log("Document deleted successfully:", complaintId);
 
-    setRequests((prev) => prev.filter((req) => req.complaintId !== complaintId));
-    setAlert({
-      variant: "success",
-      title: "Deleted",
-      message: "Request deleted successfully.",
-    });
-    setTotalCount((prev) => prev - 1);
-  } catch (err) {
-    console.error("Error deleting document:", err);
-    setAlert({
-      variant: "error",
-      title: "Error",
-      message: "Failed to delete request.",
-    });
-  }
-};
+//     setRequests((prev) => prev.filter((req) => req.complaintId !== complaintId));
+//     setAlert({
+//       variant: "success",
+//       title: "Deleted",
+//       message: "Request deleted successfully.",
+//     });
+//     setTotalCount((prev) => prev - 1);
+//   } catch (err) {
+//     console.error("Error deleting document:", err);
+//     setAlert({
+//       variant: "error",
+//       title: "Error",
+//       message: "Failed to delete request.",
+//     });
+//   }
+// };
 
 
   return (

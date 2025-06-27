@@ -34,7 +34,7 @@ const PAGE_SIZE = 10;
 export default function Orders() {
   const [tableData, setTableData] = useState<Order[]>([]);
   const [filter, setFilter] = useState("");
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<any[]>([null]);
@@ -62,7 +62,7 @@ export default function Orders() {
 };
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      // setLoading(true);
       const colRef = collection(db, "ECommerce", "PurchaseOrders", "PurchaseOrders");
       const constraints: any[] = [
         orderBy("orderPlacedAt", "desc"),
@@ -108,7 +108,7 @@ export default function Orders() {
         setPageCursors(newCursors);
       }
 
-      setLoading(false);
+      // setLoading(false);
     };
 
     fetchData();

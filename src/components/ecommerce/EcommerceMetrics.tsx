@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowDownIcon,
-  ArrowUpIcon,
+  // ArrowDownIcon,
+  // ArrowUpIcon,
   BoxIconLine,
   DollarLineIcon,
   GroupIcon,
 } from "../../icons";
-import Badge from "../ui/badge/Badge";
+// import Badge from "../ui/badge/Badge";
 import { collection, getCountFromServer } from "firebase/firestore";
 import { db } from "../../firebase.ts";
 

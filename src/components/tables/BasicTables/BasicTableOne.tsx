@@ -23,7 +23,7 @@ const PAGE_SIZE = 10;
 export default function BasicTableOne() {
   const [tableData, setTableData] = useState<ComplaintRequest[]>([]);
   const [filter, setFilter] = useState(""); // Filter by driverName or mobile
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [pageCursors, setPageCursors] = useState<any[]>([null]); // Store the lastDoc for each page
@@ -43,7 +43,7 @@ export default function BasicTableOne() {
   // Fetch data for current page (no filter)
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
+      // setLoading(true);
       let colRef = collection(db, "Complaints", "ComplaintRequests", "ComplaintRequests");
       let constraints: any[] = [orderBy("createdAt", "desc"), limit(PAGE_SIZE)];
       // Use startAfter for pagination if not on first page
@@ -82,7 +82,7 @@ export default function BasicTableOne() {
         newCursors[page] = querySnapshot.docs[querySnapshot.docs.length - 1];
         setPageCursors(newCursors);
       }
-      setLoading(false);
+      // setLoading(false);
     };
     fetchData();
     // eslint-disable-next-line

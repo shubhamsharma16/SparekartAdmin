@@ -44,19 +44,19 @@ const [loading, setLoading] = useState(false);
     }
   }, [user]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({ ...prev, [name]: value }));
+};
 
-  const handleImageUpload = async (img, path) => {
-    if (typeof img === "string") return img;
-    const storageRef = ref(storage, path);
-    await uploadBytes(storageRef, img);
-    return await getDownloadURL(storageRef);
-  };
+const handleImageUpload = async (img: File | string, path: string): Promise<string> => {
+  if (typeof img === "string") return img;
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, img);
+  return await getDownloadURL(storageRef);
+};
 
-const handleSubmit = async (e) => {
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   setLoading(true);
   try {
@@ -83,7 +83,7 @@ const handleSubmit = async (e) => {
   } catch (err) {
     alert("Error updating user: " + err);
   } finally {
-    setLoading(false); // ✅ Ensures button re-enables on success/failure
+    setLoading(false);
   }
 };
 
@@ -132,11 +132,17 @@ const handleSubmit = async (e) => {
               className="w-24 h-24 object-cover rounded mb-2"
             />
           )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setProfilePic(e.target.files[0])}
-          />
+         <input
+  type="file"
+  accept="image/*"
+  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setProfilePic(file);
+    }
+  }}
+/>
+
         </div>
 
         {/* Garage Pic */}
@@ -155,12 +161,18 @@ const handleSubmit = async (e) => {
               className="w-24 h-24 object-cover rounded mb-2"
             />
           )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setGaragePic(e.target.files[0])}
-          />
-        </div>
+        <input
+  type="file"
+  accept="image/*"
+  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setGaragePic(file);
+    }
+  }}
+/>
+</div>
+
 
         <div className="md:col-span-2 text-right">
        <button
