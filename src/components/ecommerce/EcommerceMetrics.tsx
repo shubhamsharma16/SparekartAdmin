@@ -9,6 +9,7 @@ import {
 // import Badge from "../ui/badge/Badge";
 import { collection, getCountFromServer } from "firebase/firestore";
 import { db } from "../../firebase.ts";
+import { Link } from "react-router";
 
 export default function EcommerceMetrics() {
   const [userCount, setUserCount] = useState<number | null>(null);
@@ -54,6 +55,8 @@ export default function EcommerceMetrics() {
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 md:gap-6">
       {/* Users */}
+      <Link to="/users" className="block">
+
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <GroupIcon className="text-green-800 size-6 dark:text-green/90" />
@@ -71,9 +74,11 @@ export default function EcommerceMetrics() {
           </div>
         </div>
       </div>
-
+</Link>
       {/* Orders */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+      <Link to="/purchase-orders" className="block">
+
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
           <DollarLineIcon className="text-blue-800 size-6 dark:text-blue/90" />
         </div>
@@ -92,10 +97,13 @@ export default function EcommerceMetrics() {
             9.05%
           </Badge> */}
         </div>
+        </Link>
       </div>
 
          {/* Complaints */}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+            <Link to="/all-complaints" className="block">
+
         <div className="flex items-center justify-center w-12 h-12 bg-gray-100 rounded-xl dark:bg-gray-800">
 <BoxIconLine className="text-red-500 size-6 dark:text-red-400" />
         </div>
@@ -114,6 +122,7 @@ export default function EcommerceMetrics() {
             9.05%
           </Badge> */}
         </div>
+        </Link>
       </div>
     </div>
   );
