@@ -85,7 +85,9 @@ export default function Orders() {
           orderPlacedAt: d.orderPlacedAt,
           customerName: d.shippingAddress?.fullName || "",
           customerMobileNo: d.shippingAddress?.mobileNumber || "",
-          isDelivered: d.orderDeliveredAt != null,
+          // isDelivered: d.orderDeliveredAt != null,
+              isDelivered: !!d.orderDeliveredAt, // ✅ true if timestamp/string, false if null/undefined
+
           orderBy:userMap[d.orderBy] || "Unknown",
         };
       });

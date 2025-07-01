@@ -102,8 +102,8 @@ export default function UpdateProducts() {
             name="category"
             type="text"
             value={formData.category}
-            className="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
-            readOnly
+            className="w-full border rounded px-3 py-2 "
+            // readOnly
           />
         </div>
         <div>
@@ -135,7 +135,7 @@ export default function UpdateProducts() {
             className="w-full border rounded px-3 py-2"
           />
         </div>
-        <div>
+        {/* <div>
           <label className="block font-medium mb-1">Owner ID</label>
           <input
             name="ownerId"
@@ -144,7 +144,7 @@ export default function UpdateProducts() {
             readOnly
             className="w-full border rounded px-3 py-2 bg-gray-100 cursor-not-allowed"
           />
-        </div>
+        </div> */}
         <div>
           <label className="block font-medium mb-1">Price</label>
           <input
