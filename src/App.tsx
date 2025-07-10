@@ -29,6 +29,7 @@ import ShopkeeperRequests from "./pages/Shopkeeper/ShopkeeperRequest";
 import { AuthProvider } from "./context/AuthContext";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import UpdateUser from "./pages/Users/UpdateUser";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 
 export default function App() {
   return (
@@ -82,6 +83,7 @@ export default function App() {
             {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
           </Route>
 
           {/* Auth Layout */}

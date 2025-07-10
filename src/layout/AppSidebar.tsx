@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 // Assume these icons are imported from an icon library
 import {
@@ -388,6 +388,38 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
+        <div className="flex flex-col gap-4">
+          <h2
+            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+              !isExpanded && !isHovered
+                ? "lg:justify-center"
+                : "justify-start"
+            }`}
+          >
+            {isExpanded || isHovered || isMobileOpen ? (
+              "Analytics"
+            ) : (
+              <HorizontaLDots />
+            )}
+          </h2>
+          <ul className="flex flex-col gap-4">
+            <li>
+              <NavLink
+                to="/analytics"
+                className={({ isActive }) =>
+                  isActive ? "menu-item-active" : "menu-item-inactive"
+                }
+              >
+                <span className="menu-item-icon-size">
+                  <BoxCubeIcon />
+                </span>
+                {(isExpanded || isHovered || isMobileOpen) && (
+                  <span className="menu-item-text">Analytics</span>
+                )}
+              </NavLink>
+            </li>
+          </ul>
+        </div>
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
