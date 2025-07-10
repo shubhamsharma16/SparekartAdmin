@@ -16,6 +16,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { subMonths, isAfter, format } from "date-fns";
 
 export default function AnalyticsDashboard() {
   const [complaintData, setComplaintData] = useState<any[]>([]);
@@ -24,46 +25,63 @@ export default function AnalyticsDashboard() {
   const [complaintChartType, setComplaintChartType] = useState<'line' | 'bar'>("line");
   const [orderChartType, setOrderChartType] = useState<'line' | 'bar'>("line");
   const [productChartType, setProductChartType] = useState<'bar' | 'pie'>("bar");
+  const [complaintRange, setComplaintRange] = useState<'date' | 'month'>('date');
+  const [orderRange, setOrderRange] = useState<'date' | 'month'>('date');
+  const [productRange, setProductRange] = useState<'day' | 'week' | 'month'>('day');
 
-  // Complaints per day
+  // Complaints per date/month
   useEffect(() => {
     const fetchComplaints = async () => {
       const colRef = collection(db, "Complaints", "ComplaintRequests", "ComplaintRequests");
       const snapshot = await getDocs(colRef);
+      const now = new Date();
+      let startDate = now;
+      if (complaintRange === 'month') startDate = subMonths(now, 6); // last 6 months
+      else startDate = subMonths(now, 1); // last 1 month for date-wise
       const counts: Record<string, number> = {};
       snapshot.forEach(doc => {
         const d = doc.data();
         if (d.createdAt && d.createdAt.toDate) {
-          const dateStr = d.createdAt.toDate().toISOString().slice(0, 10);
-          counts[dateStr] = (counts[dateStr] || 0) + 1;
+          const dateObj = d.createdAt.toDate();
+          if (isAfter(dateObj, startDate)) {
+            const key = complaintRange === 'month' ? format(dateObj, 'MMM yyyy') : format(dateObj, 'yyyy-MM-dd');
+            counts[key] = (counts[key] || 0) + 1;
+          }
         }
       });
       const chartData = Object.entries(counts).map(([date, count]) => ({ date, count }));
       setComplaintData(chartData);
     };
     fetchComplaints();
-  }, []);
+  }, [complaintRange]);
 
-  // Purchase orders per day (correct collection reference)
+  // Orders per date/month
   useEffect(() => {
     const fetchOrders = async () => {
       const colRef = collection(db, "ECommerce", "PurchaseOrders", "PurchaseOrders");
       const snapshot = await getDocs(colRef);
+      const now = new Date();
+      let startDate = now;
+      if (orderRange === 'month') startDate = subMonths(now, 6);
+      else startDate = subMonths(now, 1);
       const counts: Record<string, number> = {};
       snapshot.forEach(doc => {
         const d = doc.data();
         if (d.orderPlacedAt && d.orderPlacedAt.toDate) {
-          const dateStr = d.orderPlacedAt.toDate().toISOString().slice(0, 10);
-          counts[dateStr] = (counts[dateStr] || 0) + 1;
+          const dateObj = d.orderPlacedAt.toDate();
+          if (isAfter(dateObj, startDate)) {
+            const key = orderRange === 'month' ? format(dateObj, 'MMM yyyy') : format(dateObj, 'yyyy-MM-dd');
+            counts[key] = (counts[key] || 0) + 1;
+          }
         }
       });
       const chartData = Object.entries(counts).map(([date, count]) => ({ date, count }));
       setOrderData(chartData);
     };
     fetchOrders();
-  }, []);
+  }, [orderRange]);
 
-  // Products by category
+  // Products by date (date-wise, no time-interval selector)
   useEffect(() => {
     const fetchProducts = async () => {
       const colRef = collection(db, "ECommerce", "Products", "Products");
@@ -71,14 +89,34 @@ export default function AnalyticsDashboard() {
       const counts: Record<string, number> = {};
       snapshot.forEach(doc => {
         const d = doc.data();
-        // Group by category (or use ownerName for owner-wise)
+        if (d.createdAt && d.createdAt.toDate) {
+          const dateStr = format(d.createdAt.toDate(), 'yyyy-MM-dd');
+          counts[dateStr] = (counts[dateStr] || 0) + 1;
+        }
+      });
+      const chartData = Object.entries(counts).map(([date, count]) => ({ date, count }));
+      setProductData(chartData);
+    };
+    fetchProducts();
+  }, []);
+
+  // Products by category (bar/pie chart, no time-interval selector)
+  const [productCategoryData, setProductCategoryData] = useState<any[]>([]);
+  const [productCategoryChartType, setProductCategoryChartType] = useState<'bar' | 'pie'>("bar");
+  useEffect(() => {
+    const fetchProductsByCategory = async () => {
+      const colRef = collection(db, "ECommerce", "Products", "Products");
+      const snapshot = await getDocs(colRef);
+      const counts: Record<string, number> = {};
+      snapshot.forEach(doc => {
+        const d = doc.data();
         const key = d.category || "Unknown";
         counts[key] = (counts[key] || 0) + 1;
       });
       const chartData = Object.entries(counts).map(([category, count]) => ({ category, count }));
-      setProductData(chartData);
+      setProductCategoryData(chartData);
     };
-    fetchProducts();
+    fetchProductsByCategory();
   }, []);
 
   return (
@@ -86,7 +124,7 @@ export default function AnalyticsDashboard() {
       <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
       <div className="bg-white rounded shadow p-4 mb-8">
         <div className="flex items-center mb-2 gap-2">
-          <h2 className="text-lg font-semibold">Complaints per Day</h2>
+          <h2 className="text-lg font-semibold">Complaints</h2>
           <select
             value={complaintChartType}
             onChange={e => setComplaintChartType(e.target.value as 'line' | 'bar')}
@@ -94,6 +132,14 @@ export default function AnalyticsDashboard() {
           >
             <option value="line">Line Chart</option>
             <option value="bar">Bar Chart</option>
+          </select>
+          <select
+            value={complaintRange}
+            onChange={e => setComplaintRange(e.target.value as 'date' | 'month')}
+            className="ml-2 border px-2 py-1 rounded"
+          >
+            <option value="date">Date Wise</option>
+            <option value="month">Month Wise</option>
           </select>
         </div>
         <ResponsiveContainer width="100%" height={300}>
@@ -120,7 +166,7 @@ export default function AnalyticsDashboard() {
       </div>
       <div className="bg-white rounded shadow p-4 mb-8">
         <div className="flex items-center mb-2 gap-2">
-          <h2 className="text-lg font-semibold">Purchase Orders per Day</h2>
+          <h2 className="text-lg font-semibold">Purchase Orders</h2>
           <select
             value={orderChartType}
             onChange={e => setOrderChartType(e.target.value as 'line' | 'bar')}
@@ -128,6 +174,14 @@ export default function AnalyticsDashboard() {
           >
             <option value="line">Line Chart</option>
             <option value="bar">Bar Chart</option>
+          </select>
+          <select
+            value={orderRange}
+            onChange={e => setOrderRange(e.target.value as 'date' | 'month')}
+            className="ml-2 border px-2 py-1 rounded"
+          >
+            <option value="date">Date Wise</option>
+            <option value="month">Month Wise</option>
           </select>
         </div>
         <ResponsiveContainer width="100%" height={300}>
@@ -156,8 +210,8 @@ export default function AnalyticsDashboard() {
         <div className="flex items-center mb-2 gap-2">
           <h2 className="text-lg font-semibold">Products by Category</h2>
           <select
-            value={productChartType}
-            onChange={e => setProductChartType(e.target.value as 'bar' | 'pie')}
+            value={productCategoryChartType}
+            onChange={e => setProductCategoryChartType(e.target.value as 'bar' | 'pie')}
             className="ml-2 border px-2 py-1 rounded"
           >
             <option value="bar">Bar Chart</option>
@@ -165,8 +219,8 @@ export default function AnalyticsDashboard() {
           </select>
         </div>
         <ResponsiveContainer width="100%" height={300}>
-          {productChartType === "bar" ? (
-            <BarChart data={productData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+          {productCategoryChartType === "bar" ? (
+            <BarChart data={productCategoryData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="category" angle={-30} textAnchor="end" interval={0} height={70} />
               <YAxis allowDecimals={false} />
@@ -177,7 +231,7 @@ export default function AnalyticsDashboard() {
           ) : (
             <PieChart>
               <Pie
-                data={productData}
+                data={productCategoryData}
                 dataKey="count"
                 nameKey="category"
                 cx="50%"
@@ -186,8 +240,8 @@ export default function AnalyticsDashboard() {
                 fill="#ffc658"
                 label
               >
-                {productData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={['#ffc658', '#8884d8', '#82ca9d', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57'][index % 7]} />
+                {productCategoryData.map((entry, index) => (
+                  <Cell key={`cell-category-${index}`} fill={['#ffc658', '#8884d8', '#82ca9d', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57'][index % 7]} />
                 ))}
               </Pie>
               <Tooltip />
