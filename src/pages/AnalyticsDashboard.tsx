@@ -241,8 +241,8 @@ console.log(productData);
                 fill="#ffc658"
                 label
               >
-                {productCategoryData.map(( index) => (
-                  <Cell key={`cell-category-${index}`} fill={['#ffc658', '#8884d8', '#82ca9d', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57'][index % 7]} />
+                {productCategoryData.map(( _,index) => (
+                  <Cell  key={`cell-category-${index}`} fill={['#ffc658', '#8884d8', '#82ca9d', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57'][index % 7]} />
                 ))}
               </Pie>
               <Tooltip />
