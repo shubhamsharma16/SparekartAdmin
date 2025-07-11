@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import {
@@ -24,10 +24,11 @@ export default function AnalyticsDashboard() {
   const [productData, setProductData] = useState<any[]>([]);
   const [complaintChartType, setComplaintChartType] = useState<'line' | 'bar'>("line");
   const [orderChartType, setOrderChartType] = useState<'line' | 'bar'>("line");
-  const [productChartType, setProductChartType] = useState<'bar' | 'pie'>("bar");
+  // const [productChartType, setProductChartType] = useState<'bar' | 'pie'>("bar");
   const [complaintRange, setComplaintRange] = useState<'date' | 'month'>('date');
   const [orderRange, setOrderRange] = useState<'date' | 'month'>('date');
-  const [productRange, setProductRange] = useState<'day' | 'week' | 'month'>('day');
+  // const [productRange, setProductRange] = useState<'day' | 'week' | 'month'>('day');
+console.log(productData);
 
   // Complaints per date/month
   useEffect(() => {
@@ -121,7 +122,7 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Analytics Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Analytics</h1>
       <div className="bg-white rounded shadow p-4 mb-8">
         <div className="flex items-center mb-2 gap-2">
           <h2 className="text-lg font-semibold">Complaints</h2>
@@ -240,7 +241,7 @@ export default function AnalyticsDashboard() {
                 fill="#ffc658"
                 label
               >
-                {productCategoryData.map((entry, index) => (
+                {productCategoryData.map(( index) => (
                   <Cell key={`cell-category-${index}`} fill={['#ffc658', '#8884d8', '#82ca9d', '#ff8042', '#8dd1e1', '#a4de6c', '#d0ed57'][index % 7]} />
                 ))}
               </Pie>

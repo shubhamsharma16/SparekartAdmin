@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 // Assume these icons are imported from an icon library
 import {
@@ -388,7 +388,7 @@ const AppSidebar: React.FC = () => {
             </div>
           </div>
         </nav>
-        <div className="flex flex-col gap-4">
+        {/* <div className="flex flex-col gap-4">
           <h2
             className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
               !isExpanded && !isHovered
@@ -419,7 +419,7 @@ const AppSidebar: React.FC = () => {
               </NavLink>
             </li>
           </ul>
-        </div>
+        </div> */}
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}
       </div>
     </aside>
